@@ -15,6 +15,7 @@ enum Mensagens {
     INFORMACOES,
     PARA
 }
+
 @Data
 @AllArgsConstructor
 @ToString(exclude = {"cpf"})
@@ -121,12 +122,15 @@ public class GerenciaBanco {
                 case 1:
                     var saldo = contaCliente.getSaldo();
                     CliInterface.mensagens(Mensagens.CONSULTA);
+
                     System.out.println(saldo);
                     break;
+
                 case 2:
                     CliInterface.mensagens(Mensagens.DEPOSITA);
                     try {
                         var entradaLeitura = new Scanner(System.in);
+
                         if (!entradaLeitura.hasNextDouble()){
                             var deposito = entradaLeitura.nextDouble();
                             contaCliente.deposito(deposito);
@@ -135,20 +139,28 @@ public class GerenciaBanco {
                         System.out.println("Valores digitados inválidos!");
                     }
                     break;
+
                 case 3:
                     CliInterface.mensagens(Mensagens.SACA);
+
                     var valorSaque = leitura.nextDouble();
                     String isSacado = contaCliente.saca(valorSaque);
+
                     System.out.println(isSacado);
                     CliInterface.mensagens(Mensagens.SAQUE_SUCESSO);
+
                     break;
+
                 case 4:
                     CliInterface.mensagens(Mensagens.INFORMACOES);
                     System.out.println(contaCliente);
                     break;
+
                 default:
                     CliInterface.mensagens(Mensagens.PARA);
+
                     aplicacaoRodando = false;
+
                     CliInterface.saida();
                     break;
             }
