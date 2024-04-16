@@ -3,6 +3,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 enum Mensagens {
@@ -32,9 +33,11 @@ class Conta {
 
     public void deposito(double valorDeposito) {
         try {
-            this.saldo += valorDeposito;
-        } catch (ArithmeticException e) {
-            throw new ArithmeticException("Não é possível adicionar 0 ao deposito");
+            if (valorDeposito <= 0)
+                throw new IllegalArgumentException();
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("Valores digitados inválidos");
         }
     }
 
@@ -113,7 +116,8 @@ public class GerenciaBanco {
             CliInterface.opcoes();
             int entrada = leitura.nextInt();
             System.out.println("=========");
-            switch (entrada){
+
+            switch (entrada) {
                 case 1:
                     var saldo = contaCliente.getSaldo();
                     CliInterface.mensagens(Mensagens.CONSULTA);
@@ -121,9 +125,15 @@ public class GerenciaBanco {
                     break;
                 case 2:
                     CliInterface.mensagens(Mensagens.DEPOSITA);
-                    var deposito = leitura.nextDouble();
-                    contaCliente.deposito(deposito);
-                    CliInterface.mensagens(Mensagens.DEPOSITO_SUCESSO);
+                    try {
+                        var entradaLeitura = new Scanner(System.in);
+                        if (!entradaLeitura.hasNextDouble()){
+                            var deposito = entradaLeitura.nextDouble();
+                            contaCliente.deposito(deposito);
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("Valores digitados inválidos!");
+                    }
                     break;
                 case 3:
                     CliInterface.mensagens(Mensagens.SACA);
