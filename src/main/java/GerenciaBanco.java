@@ -37,6 +37,8 @@ class Conta {
             if (valorDeposito <= 0)
                 throw new IllegalArgumentException();
 
+            this.saldo += valorDeposito;
+
         } catch (IllegalArgumentException e) {
             System.out.println("Valores digitados inválidos");
         }
@@ -50,6 +52,7 @@ class Conta {
         }
 
         this.saldo -= valorSaque;
+        CliInterface.mensagens(Mensagens.SAQUE_SUCESSO);
         return String.format("Valor sacado: %s. \t Valor restante na conta: %s", valorSaque, this.getSaldo());
     }
 }
@@ -71,8 +74,15 @@ class CliInterface {
         System.out.println("5. Finalizar programa");
     }
 
+    public static void saida() {
+        System.out.println("-----------");
+        System.out.println("Obrigado por utilizar o gerencia banco!!");
+        System.out.println("Sistema finalizado!");
+        System.out.println("xxxxxxxxx");
+    }
+
     public static void mensagens(Mensagens mensagens) {
-        switch (mensagens){
+        switch (mensagens) {
             case CONSULTA -> System.out.println("Seu saldo atual disponível é de: ");
             case DEPOSITA -> System.out.println("Informe um valor para depositar em sua conta: ");
             case DEPOSITO_SUCESSO -> System.out.println("Deposito realizado com sucesso!");
@@ -81,13 +91,6 @@ class CliInterface {
             case INFORMACOES -> System.out.println("Informações gerais da conta");
             case PARA -> System.out.println("Sistema \"Gerencia Bando\" finalizado. Obrigado e volte sempre! ");
         }
-    }
-
-    public static void saida() {
-        System.out.println("-----------");
-        System.out.println("Obrigado por utilizar o gerencia banco!!");
-        System.out.println("Sistema finalizado!");
-        System.out.println("xxxxxxxxx");
     }
 
     public static Cliente retornarNovoCliente() {
@@ -108,9 +111,9 @@ public class GerenciaBanco {
     public static void main(String[] args) {
         CliInterface.entrada();
 
-        var leitura = new Scanner(System.in);
-        var clienteNovo = CliInterface.retornarNovoCliente();
-        var contaCliente = new Conta(0, clienteNovo);
+        Scanner leitura = new Scanner(System.in);
+        Cliente clienteNovo = CliInterface.retornarNovoCliente();
+        Conta contaCliente = new Conta(0, clienteNovo);
         boolean aplicacaoRodando = true;
 
         while (aplicacaoRodando) {
@@ -131,10 +134,10 @@ public class GerenciaBanco {
                     try {
                         var entradaLeitura = new Scanner(System.in);
 
-                        if (!entradaLeitura.hasNextDouble()){
-                            var deposito = entradaLeitura.nextDouble();
-                            contaCliente.deposito(deposito);
-                        }
+                        var deposito = entradaLeitura.nextDouble();
+                        contaCliente.deposito(deposito);
+                        CliInterface.mensagens(Mensagens.DEPOSITO_SUCESSO);
+
                     } catch (InputMismatchException e) {
                         System.out.println("Valores digitados inválidos!");
                     }
@@ -147,7 +150,6 @@ public class GerenciaBanco {
                     String isSacado = contaCliente.saca(valorSaque);
 
                     System.out.println(isSacado);
-                    CliInterface.mensagens(Mensagens.SAQUE_SUCESSO);
 
                     break;
 
